@@ -25,3 +25,7 @@ dependencies:
     version: v2.1.0
     docker__state: "present"
     docker__users: [root]
+  - name: role-github-app
+    src: ssh://git@github.com/loic-roux-404/role-github-app.git
+    scm: git
+    version: main

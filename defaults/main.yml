@@ -3,17 +3,17 @@
 coolify_domain: "coolify.{{ hostvars[inventory_hostname].ansible_host }}"
 coolify_user: root
 
+################
 # Gh app creation
 # !!!! Need github token !!!!
-github_api: https://api.github.com
-github_site: https://github.com
+# Configure dependancy role
+# github.com/loic-roux-404/role-github-app.git
+################
 # Not working yet, so it's disabled
-coolify_github_app_create_server: False
-coolify_github_api_token: ~
-coolify_github_app_url: "{{ coolify_domain }}"
-coolify_github_app_name: "coolify-{{ coolify_user }}"
+github_app_url: "{{ coolify_domain }}"
+github_app_name: "coolify-{{ coolify_user }}"
 
-coolify_github_app_manifest:
+github_app_manifest:
   name: "{{ coolify_github_app_name }}"
   url: "{{ coolify_github_app_url }}"
   hook_attributes:
