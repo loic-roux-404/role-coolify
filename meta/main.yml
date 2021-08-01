@@ -24,8 +24,8 @@ dependencies:
     src: nickjj.docker
     version: v2.1.0
     docker__state: "present"
-    docker__users: [root]
-  - name: role-github-app
-    src: ssh://git@github.com/loic-roux-404/role-github-app.git
-    scm: git
-    version: main
+  # recommanded to create github app easily
+  # - name: role-github-app
+  #   src: ssh://git@github.com/loic-roux-404/role-github-app.git
+  #   scm: git
+  #   version: main

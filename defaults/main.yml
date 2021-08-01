@@ -1,6 +1,11 @@
 ---
 # Base
 coolify_domain: "coolify.{{ hostvars[inventory_hostname].ansible_host }}"
+# User need to be in docker users
+##################
+# WARNING user need to have uid / gid to 1001 otherwise mongodb will
+# not going to create data volume (non root container constraint)
+##################
 coolify_user: root
 
 ################
@@ -13,6 +18,7 @@ coolify_user: root
 github_app_url: "{{ coolify_domain }}"
 github_app_name: "coolify-{{ coolify_user }}"
 
+# Example manifest
 github_app_manifest:
   name: "{{ coolify_github_app_name }}"
   url: "{{ coolify_github_app_url }}"
@@ -49,6 +55,7 @@ coolify_force_update: False
 coolify_app_dir: "{{ '/root' if coolify_user == 'root' else '/home/%s' % coolify_user }}"
 coolify_app_volume: "{{ '%s/coolify-repo' % coolify_app_dir }}"
 coolify_data_volume: /data/coolify
+coolify_data_volume_mongo: "{{ coolify_data_volume }}/dbdata"
 coolify_swarm_addr: "{{ ansible_default_ipv4.interface }}"
 # Install script
 # Options :

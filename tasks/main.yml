@@ -1,17 +1,5 @@
 ---
-# Fact after role-github-app
-- set_fact:
-    _coolify_env: "{{
-      {
-        VITE_GITHUB_APP_NAME: gh_app_infos_res.name,
-        VITE_GITHUB_APP_CLIENTID: gh_app_infos_res.client_id,
-        GITHUB_APP_CLIENT_SECRET: gh_app_infos_res.client_secret,
-        GITHUP_APP_WEBHOOK_SECRET: gh_app_infos_res.webhook_secret,
-        GITHUB_APP_PRIVATE_KEY: gh_app_infos_res.pem
-      } | combine(_coolify_env)
-    }}"
-  when:
-    - gh_app_infos_res | d(False)
-    - "'client_id' in gh_app_infos_res"
 
 - include: stack.yml
+  become_user: "{{ coolify_user }}"
+  become: True

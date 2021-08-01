@@ -6,6 +6,8 @@
 #
 #################
 
+docker_exe='sudo -E docker'
+
 if [ ! -f "{{ coolify_app_volume }}/.env" ]; then
     echo '
 ####################################
@@ -16,7 +18,8 @@ fi
 
 buildCoolify() {
     cd {{ coolify_app_volume }}
-    docker build --label coolify-reserve=true -t coolify -f {{ coolify_data_volume }}/Dockerfile .
+    ${docker_exe} build --label coolify-reserve=true -t coolify \
+        -f {{ coolify_data_volume }}/Dockerfile .
     cd {{ coolify_data_volume }}
 
     if [ $? -ne 0 ]; then
@@ -29,12 +32,12 @@ buildCoolify() {
 }
 
 deploy() {
-    docker stack deploy -c docker-compose.yml coollabs-coolify
+    ${docker_exe} stack deploy -c docker-compose.yml coollabs-coolify
 }
 
 source {{ coolify_app_volume }}/.env
-docker swarm init --advertise-addr '{{ coolify_swarm_addr }}' || true
-docker network create ${DOCKER_NETWORK} --driver overlay || true
+${docker_exe} swarm init --advertise-addr '{{ coolify_swarm_addr }}' || true
+${docker_exe} network create ${DOCKER_NETWORK} --driver overlay || true
 
 case "$1" in
     "all")
@@ -43,7 +46,7 @@ case "$1" in
 #################################
 #### Rebuilding everything. #####
 #################################'
-        docker stack rm coollabs-coolify
+        ${docker_exe} stack rm coollabs-coolify
         deploy
     ;;
     "coolify")
@@ -52,7 +55,7 @@ case "$1" in
 ##############################
 #### Rebuilding Coolify. #####
 ##############################'
-        docker service rm coollabs-coolify_coolify
+        ${docker_exe} service rm coollabs-coolify_coolify
         deploy
     ;;
     "proxy")
@@ -60,7 +63,7 @@ case "$1" in
 ############################
 #### Rebuilding Proxy. #####
 ############################'
-        docker service rm coollabs-coolify_proxy
+        ${docker_exe} service rm coollabs-coolify_proxy
         deploy
     ;;
     "mongodb")
@@ -68,7 +71,7 @@ case "$1" in
 ############################
 #### Rebuilding Db. #####
 ############################'
-        docker service rm coollabs-coolify_mongodb
+        ${docker_exe} service rm coollabs-coolify_mongodb
         deploy
     ;;
     "upgrade-phase-1")
@@ -83,7 +86,7 @@ case "$1" in
 ################################
 #### Upgrading Coolify P2. #####
 ################################'
-        docker service rm coollabs-coolify_coolify
+        ${docker_exe} service rm coollabs-coolify_coolify
         deploy
     ;;
     *)

@@ -1,24 +1,25 @@
 ---
 - name: "Clone repo"
-  become: true
   ansible.builtin.git:
     repo: 'https://{{ coolify_git_provider }}/{{ coolify_git_org }}/{{ coolify_git_repo }}.git'
     dest: "{{ coolify_app_volume }}"
     version: "{{ coolify_version }}"
     force: "{{ coolify_force_update }}"
   ignore_errors: "{{ coolify_force_update == False }}"
+  register: coolify_version_state
 
 - name: "Create install folders"
+  become: True
+  become_user: root
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "{{ coolify_user }}"
     group: "{{ coolify_user }}"
     mode: 0755
-  become: yes
   loop:
     - "{{ coolify_data_volume }}"
-    - "{{ coolify_data_volume }}/dbdata"
+    - "{{ coolify_data_volume_mongo }}"
     - "{{ coolify_app_dir }}"
     - "{{ coolify_app_volume }}"
 
@@ -45,7 +46,6 @@
   become: yes
 
 - name: Deploy swarm stack
-  become: True
   ansible.builtin.command:
     chdir: "{{ coolify_data_volume }}"
     cmd: "./install.sh {{ coolify_install_mode }}"
